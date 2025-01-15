@@ -1,15 +1,13 @@
 import Routes from './routes';
 import { AuthProvider } from './hooks/useAuth';
-import { RegisterForm } from './components/auth/RegisterForm';
-import { LoginForm } from './components/auth/LoginForm';
-import { ForgotForm } from './components/auth/ForgotForm';
+import { Header } from './components/layout/Header';
 function App() {
 
   return (
     //   <AuthProvider>
     //   <Routes />
     // </AuthProvider>
-    <ForgotForm />
+    <Header />
   )
 }
 

@@ -13,6 +13,7 @@ const Home = () => {
 
 
     const [products, setProducts] = useState([]);
+    const [newArrivals, setNewArrivals] = useState([]);
     const [loading, setLoading] = useState<boolean>(true);
     let usdToSolRate;
 
@@ -64,8 +65,23 @@ const Home = () => {
         };
 
 
+        const fetchNewArrivals = async () => {
+            try {
+                const response = await fetch("https://fakestoreapi.com/products?limit=3");
+                const data = await response.json();
+                // console.log(data);
+
+                setNewArrivals(data);
+            } catch (error) {
+                console.error("Error fetching products:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
 
         fetchProducts();
+        fetchNewArrivals();
     }, []);
 
 
@@ -81,10 +97,15 @@ const Home = () => {
             <Hero />
             <div className='flex py-16 flex-col gap-4 px-8' >
                 <p className=' text-2xl text-[#000000]' >New Arrivals</p>
-                <div className='flex flex-col lg:flex-row gap-2 justify-between '>
-                    <NewArrivals />
-                    <NewArrivals />
-                    <NewArrivals />
+                <div className='flex flex-col lg:flex-row gap-2 items-start justify-between '>
+                    {
+                        newArrivals.map((product) => (
+                            <NewArrivals
+                                src={product.image} key={product.id} title={product.title} price={product.price}
+                            />
+
+                        ))
+                    }
                 </div>
             </div>
             <div className='flex flex-wrap gap-3 my-5 items-start ' >

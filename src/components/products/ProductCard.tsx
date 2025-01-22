@@ -1,28 +1,31 @@
-import React from "react";
-
 type ProductCardProps = {
-    title: string;
+    title?: string;
     price: number;
-    productImage: string;
-    category: string;
+    productImage?: string;
+    category?: string;
     onAddToCart?: () => void; // Optional callback for adding to cart
 }
 
 export const ProductCard = ({
+
     title,
     price,
     productImage,
     category,
     onAddToCart,
 }: ProductCardProps) => {
+
+
     return (
-        <div className="border rounded-lg shadow-md overflow-hidden max-w-sm bg-white">
+        <div  className="border rounded-lg shadow-md overflow-hidden max-w-sm bg-white">
             {/* Product Image */}
-            <img
+          <div className="md:h-60 md:w-60" >
+          <img
                 src={productImage}
                 alt={title}
-                className="w-full h-48 object-cover"
+                className="w-full h-full object-contain"
             />
+          </div>
 
             {/* Product Details */}
             <div className="p-4">

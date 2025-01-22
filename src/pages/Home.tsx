@@ -42,7 +42,7 @@ const Home = () => {
 
 
 
-    
+
 
 
 
@@ -69,7 +69,10 @@ const Home = () => {
     }, []);
 
 
+    function addToCart() {
+        console.log("added to cart");
 
+    }
 
 
     return (
@@ -84,16 +87,19 @@ const Home = () => {
                     <NewArrivals />
                 </div>
             </div>
-            <div className='flex flex-wrap ' >
+            <div className='flex flex-wrap gap-3 my-5 items-start ' >
                 {
                     products?.map((product) => (
-                        <ProductCard key={product.id} title={product.title} category={product.category} productImage={product.image} price={ product.price} />
+                        <ProductCard key={product.id} title={product.title} category={product.category} productImage={product.image} price={product.price} onAddToCart={addToCart} />
                     ))
                 }
             </div>
             <Explore />
             <FlashCard />
-            <Explore src='https://img.freepik.com/free-photo/sexy-african-american-woman-with-afro-hairstyle-woman-wearing-white-velvet-festive-dress_273443-3877.jpg?t=st=1737542067~exp=1737545667~hmac=3fb945e9a7ed2500e234efb86aaaf0d2408898c72a3044eb00d5d02c35a6ee02&w=740' />
+            <div >
+
+                <Explore src='https://img.freepik.com/free-photo/studio-photo-african-black-woman-stylish-dress-white-sunglasses_273443-3237.jpg?ga=GA1.1.1380726810.1733336188&semt=ais_incoming' title='Best Sellers Everyone Love' subTitle='poolside glam include' bgColor='#0186C4' />
+            </div>
             <Subcription />
 
             <Footer />

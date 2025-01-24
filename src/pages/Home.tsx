@@ -9,7 +9,7 @@ import { Subcription } from '../components/auth/Subscription'
 import { Footer } from '../components/layout/Footer'
 import { ProductCard } from '../components/products/ProductCard'
 
-const Home = () => {
+const HomePage = () => {
 
 
     const [products, setProducts] = useState([]);
@@ -128,4 +128,4 @@ const Home = () => {
     )
 }
 
-export default Home
+export default HomePage;

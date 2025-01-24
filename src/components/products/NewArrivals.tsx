@@ -1,4 +1,4 @@
-import { Button } from "../layout/Button"
+// import { Button } from "../layout/Button"
 type NewArrivalProps = {
     src?: string;
     price?: number;
@@ -21,12 +21,12 @@ export const NewArrivals = ({ price = 89, src = "https://img.freepik.com/premium
                     {title} <span className="text-[#C4C4C4] text-base block">
                         {subTitle}
                     </span>
+                    <span>
+                    ${price}
+                    </span>
                 </p>
                 {/* <Button text={`${price}$ SHOP NOW`} bgColor="bg-black" width="500px" rounded="rounded-lg" padding="p-2" /> */}
 
-                <button className="  text-white rounded-lg bg-blue-500 p-2" >
-                    {price}$ SHOP NOW
-                </button>
             </div>
         </div>
 

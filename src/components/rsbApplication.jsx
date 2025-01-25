@@ -97,6 +97,7 @@ function RsbApplication() {
       navigate("/student");
     } catch (error) {
       console.error("Error submitting form:", error);
+      navigate("/student");
     }
   };
 

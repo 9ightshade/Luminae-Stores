@@ -1,73 +1,159 @@
-import logo from "../assets/svg/logo.svg";
-import hamburger from "../assets/svg/hamburger-menu.svg";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Bars3Icon,
+  XMarkIcon,
+  UserPlusIcon,
+} from "@heroicons/react/24/outline";
+import logo from "../assets/svg/logo.svg";
 import { useTokenClearAndRedirect } from "./helper/function";
-
-// import dropdown from "../assets/svg/Vector.svg";
 
 function Nav() {
   const [isVisible, setIsVisible] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const toogleSideNav = () => {
-    setIsVisible(!isVisible);
-  };
+
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    const checkToken = (token) => {
-      if (token) {
-        setIsLoggedIn(true);
-      } else {
-        console.log("token not found...");
-      }
-    };
-    checkToken(token);
-  }, [isLoggedIn, token]);
+    setIsLoggedIn(!!token);
+  }, [token]);
+
+  const toggleSideNav = () => {
+    setIsVisible((prev) => !prev);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+  };
 
   return (
-    <div className=" bg-white flex items-center justify-between gap-1 p-2 text-[1.2vw] ">
-      <div className="logo cursor-pointer w-[20%] max-w-[30%]  ">
-        <a href="https://rsubs.org/">
-          <img src={logo} alt="River state logo" className="w-full" />
-        </a>
+    <nav className="bg-white shadow-md sticky top-0 z-50">
+      <div className="container mx-auto flex items-center justify-between px-6 py-4">
+        {/* Logo */}
+        <Link to="/">
+          <img src={logo} alt="Logo" className="w-32" />
+        </Link>
+
+        {/* Hamburger Menu for Mobile */}
+        <button
+          onClick={toggleSideNav}
+          className="block md:hidden focus:outline-none">
+          {isVisible ? (
+            <XMarkIcon className="w-8 h-8 text-gray-700" />
+          ) : (
+            <Bars3Icon className="w-8 h-8 text-gray-700" />
+          )}
+        </button>
+
+        {/* Desktop Links */}
+        <div className="hidden md:flex gap-6 items-center">
+          <Link to="/" className="text-gray-700 hover:text-blue-500">
+            Home
+          </Link>
+          <Link to="/about" className="text-gray-700 hover:text-blue-500">
+            About Us
+          </Link>
+          <Link to="/contact" className="text-gray-700 hover:text-blue-500">
+            Contact Us
+          </Link>
+          <Link to="/portal" className="text-gray-700 hover:text-blue-500">
+            Portal
+          </Link>
+          <Link to="/privacy" className="text-gray-700 hover:text-blue-500">
+            Privacy Policy
+          </Link>
+          <Link to="/alumni" className="text-gray-700 hover:text-blue-500">
+            Alumni
+          </Link>
+          {isLoggedIn ? (
+            <button
+              onClick={handleLogout}
+              className="flex items-center bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200">
+              {/* <ArrowRightOnRectangleIcon className="w-5 h-5 mr-2" /> */}
+              <Link to="/">Log Out</Link>
+            </button>
+          ) : (
+            <Link
+              to="/register"
+              className="flex items-center bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200">
+              <UserPlusIcon className="w-5 h-5 mr-2" />
+              Create Profile
+            </Link>
+          )}
+        </div>
       </div>
 
-      <nav className="hidden md:block ">
-        <ul className="flex justify-between gap-4  ">
-          <li className="hover:text-[#6b7280] cursor-pointer ">Home</li>
-
-          <li className="hover:text-[#6b7280] cursor-pointer ">About Us</li>
-          <li className="hover:text-[#6b7280] cursor-pointer ">Contact Us</li>
-          <li className="hover:text-[#6b7280] cursor-pointer ">Portal</li>
-          <li className="hover:text-[#6b7280] cursor-pointer ">
-            Privacy Policy
-          </li>
-          <li className="hover:text-[#6b7280] cursor-pointer ">Alumni</li>
-        </ul>
-      </nav>
-      {token ? (
-        <button
-          className="bg-[#1e3a8a] text-[#f5f5f5] hidden md:block py-2 px-3 rounded cursor-pointer"
-          onClick={() => {
-            localStorage.removeItem("token");
-          }}>
-          <Link to={"/"}>Log Out</Link>
-        </button>
-      ) : (
-        <button className="bg-[#1e3a8a] text-[#f5f5f5] hidden md:block py-2 px-3 rounded cursor-pointer">
-          <Link to={"register"}>Create Profile</Link>
-        </button>
-      )}
-
-      <button
-        className="block md:hidden w-[8%]  "
-        onClick={() => {
-          toogleSideNav();
-        }}>
-        <img src={hamburger} alt="toogle navbar" className="w-full" />
-      </button>
-    </div>
+      {/* Mobile Dropdown */}
+      <AnimatePresence>
+        {isVisible && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="bg-gray-50 shadow-md md:hidden">
+            <div className="flex flex-col px-6 py-4 gap-4">
+              <Link
+                to="/"
+                className="text-gray-700 hover:text-blue-500"
+                onClick={toggleSideNav}>
+                Home
+              </Link>
+              <Link
+                to="/about"
+                className="text-gray-700 hover:text-blue-500"
+                onClick={toggleSideNav}>
+                About Us
+              </Link>
+              <Link
+                to="/contact"
+                className="text-gray-700 hover:text-blue-500"
+                onClick={toggleSideNav}>
+                Contact Us
+              </Link>
+              <Link
+                to="/portal"
+                className="text-gray-700 hover:text-blue-500"
+                onClick={toggleSideNav}>
+                Portal
+              </Link>
+              <Link
+                to="/privacy"
+                className="text-gray-700 hover:text-blue-500"
+                onClick={toggleSideNav}>
+                Privacy Policy
+              </Link>
+              <Link
+                to="/alumni"
+                className="text-gray-700 hover:text-blue-500"
+                onClick={toggleSideNav}>
+                Alumni
+              </Link>
+              {isLoggedIn ? (
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    toggleSideNav();
+                  }}
+                  className="flex items-center bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200">
+                  {/* <ArrowRightOnRectangleIcon className="w-5 h-5 mr-2" /> */}
+                  Log Out
+                </button>
+              ) : (
+                <Link
+                  to="/create-profile"
+                  className="flex items-center bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200"
+                  onClick={toggleSideNav}>
+                  <UserPlusIcon className="w-5 h-5 mr-2" />
+                  Create Profile
+                </Link>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </nav>
   );
 }
 

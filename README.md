@@ -1,4 +1,4 @@
-# Student Portal
+# Rsu Portal
 
 A web-based application that allows students to fill and submit applications while enabling administrators to review, approve, or decline the submissions.
 
@@ -24,7 +24,7 @@ A web-based application that allows students to fill and submit applications whi
 
 ## Introduction
 
-The **Student Portal** is a centralized system designed for managing student applications. Students can log in to their profiles to fill and submit applications, while administrators can manage these submissions by approving or declining them.
+The **Rsu Portal** is a centralized system designed for managing student applications. Students can log in to their profiles to fill and submit applications, while administrators can manage these submissions by approving or declining them.
 
 This project simplifies the application submission and review process, ensuring a smooth and efficient workflow for both students and administrators.
 

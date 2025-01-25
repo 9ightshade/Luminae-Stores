@@ -12,9 +12,3 @@ function App() {
 }
 
 export default App
-
-{/**
-  ENDPOINT to send form application
-  api to logout
-  
-  */}

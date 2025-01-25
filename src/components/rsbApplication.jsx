@@ -1,7 +1,14 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  CheckCircleIcon,
+  ChevronRightIcon,
+  ChevronLeftIcon,
+} from "@heroicons/react/24/outline";
+
 import Nav from "./nav";
 import sections from "../sections";
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import Course from "./forms/course";
 import PersonalInfo from "./forms/personalInfo";
 import EmergencyContact from "./forms/emergencyContact";
@@ -15,12 +22,11 @@ import axios from "axios";
 
 function RsbApplication() {
   const [step, setStep] = useState(1);
-  const [file, setFile] = useState(null);
   const email = localStorage.getItem("email");
-  const userId = localStorage.getItem("_id");
-  const startUrl = `https://portal.rsubs.org/api/applications/start`;
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+  const startUrl = `https://portal.rsubs.org/api/applications/start`;
+
   const [formData, setFormData] = useState({
     course: { programmeTitle: "", courseTitle: "" },
     personalInformation: {
@@ -75,260 +81,170 @@ function RsbApplication() {
     lastSavedStep: "Started",
   });
 
-  const NextStep = () => {
-    setStep(step + 1);
-  };
-  const PrevStep = () => {
-    setStep(step - 1);
-  };
-
   const handleChange = (section, key, value) => {
     setFormData((prev) => ({
       ...prev,
-      [section]: {
-        ...prev[section],
-        [key]: value,
-      },
+      [section]: { ...prev[section], [key]: value },
     }));
   };
-
-  const handleFileChange = (section, key, file) => {
-    setFormData((prev) => ({
-      ...prev,
-      [section]: {
-        ...prev[section],
-        [key]: file,
-      },
-    }));
-  };
-
-  // const testURL = ' https://httpbin.org/post';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(`submit form ...`);
-    console.log("final form:", formData);
-
-    const dataToSend = new FormData();
-
-    // Append non-file fields
-    Object.keys(formData).forEach((sectionKey) => {
-      if (
-        typeof formData[sectionKey] === "object" &&
-        !Array.isArray(formData[sectionKey])
-      ) {
-        Object.entries(formData[sectionKey]).forEach(([key, value]) => {
-          if (value instanceof File) {
-            dataToSend.append(`${sectionKey}.${key}`, value);
-          } else {
-            dataToSend.append(`${sectionKey}.${key}`, value);
-          }
-        });
-      }
-    });
-
     try {
       const response = await axios.post(startUrl, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          // "Content-Type": "multipart/form-data"
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
-
-      console.log("Response:", response.data);
-      // navigate('/student')
+      navigate("/student");
     } catch (error) {
       console.error("Error submitting form:", error);
     }
   };
 
-  const handleClick = (sectionId) => {
-    console.log(sectionId);
+  const renderFormStep = () => {
+    const formComponents = {
+      1: (
+        <Course
+          data={formData.course}
+          onChange={(k, v) => handleChange("course", k, v)}
+        />
+      ),
+      2: (
+        <PersonalInfo
+          data={formData.personalInformation}
+          onChange={(k, v) => handleChange("personalInformation", k, v)}
+        />
+      ),
+      3: (
+        <EmergencyContact
+          data={formData.emergencyContact}
+          onChange={(k, v) => handleChange("emergencyContact", k, v)}
+        />
+      ),
+      4: (
+        <Citizenship
+          data={formData.citizenship}
+          onChange={(k, v) => handleChange("citizenship", k, v)}
+        />
+      ),
+      5: (
+        <WorkExperience
+          data={formData.workExperience}
+          onChange={(k, v) => handleChange("workExperience", k, v)}
+        />
+      ),
+      6: (
+        <RsubsQualification
+          data={formData.lbsProgrammeQualification}
+          onChange={(k, v) => handleChange("lbsProgrammeQualification", k, v)}
+        />
+      ),
+      7: (
+        <Qualifications
+          data={formData.qualifications}
+          onChange={(idx, k, v) => {
+            const newQualifications = [...formData.qualifications];
+            newQualifications[idx][k] = v;
+            setFormData({ ...formData, qualifications: newQualifications });
+          }}
+        />
+      ),
+      8: (
+        <ProgramFinancing
+          data={formData.programmeFinancing}
+          onChange={(k, v) => handleChange("programmeFinancing", k, v)}
+        />
+      ),
+      9: (
+        <Attachment
+          data={formData.attachments}
+          onChange={(k, f) => handleChange("attachments", k, f)}
+        />
+      ),
+    };
 
-    switch (sectionId) {
-      case 1:
-        setStep(1);
-        break;
-
-      case 2:
-        setStep(2);
-        break;
-      case 3:
-        setStep(3);
-        break;
-      case 4:
-        setStep(4);
-        break;
-      case 5:
-        setStep(5);
-        break;
-      case 6:
-        setStep(6);
-        break;
-      case 7:
-        setStep(7);
-        break;
-      case 8:
-        setStep(8);
-        break;
-      case 9:
-        setStep(9);
-        break;
-      default:
-        setStep(1);
-        break;
-    }
+    return formComponents[step];
   };
 
   return (
-    <div>
+    <div className="min-h-screen bg-gray-100">
       <Nav />
-      <h1
-        className="text-center text-gray-500 text-[1.3rem]"
-        onClick={() => {
-          console.log(formData);
-        }}>
-        Full-Time MBA Admissions
-      </h1>
-
-      <div className="container px-7 flex justify-between gap-4  ">
-        <div className="sections flex gap-2 flex-col w-1/3  text-gray-500 ">
-          {sections.map((section) => (
-            <button
-              className=" py-[.7em] border-none rounded"
-              style={{
-                backgroundColor: `${
-                  step === section.id ? "#1e3a8a" : "#F3F1F1"
-                }`,
-                color: `${step === section.id ? "white" : "#6b7280"}`,
-              }}
-              key={section.id}
-              onClick={() => {
-                handleClick(section.id);
-              }}>
-              {section.label}
-            </button>
-          ))}
-        </div>
-
-        <form
-          className="form bg-[#F3F1F1] w-full px-4 py-3 "
-          onSubmit={handleSubmit}>
-          {sections.map(
-            (section) =>
-              step === section.id && (
-                <div key={section.id}>
-                  <h2
-                    className="text-[1.5rem] mb-[20px] text-[#39447F] font-bold"
-                    key={section.id}>
-                    {section.label}
-                  </h2>
-                  {step === 1 && (
-                    <Course
-                      data={formData.course}
-                      onChange={(key, value) =>
-                        handleChange("course", key, value)
-                      }
-                    />
-                  )}
-                  {step === 2 && (
-                    <PersonalInfo
-                      data={formData.personalInformation}
-                      onChange={(key, value) =>
-                        handleChange("personalInformation", key, value)
-                      }
-                    />
-                  )}
-                  {step === 3 && (
-                    <EmergencyContact
-                      data={formData.emergencyContact}
-                      onChange={(key, value) =>
-                        handleChange("emergencyContact", key, value)
-                      }
-                    />
-                  )}
-                  {step === 4 && (
-                    <Citizenship
-                      data={formData.citizenship}
-                      onChange={(key, value) =>
-                        handleChange("citizenship", key, value)
-                      }
-                    />
-                  )}
-                  {step === 5 && (
-                    <WorkExperience
-                      data={formData.workExperience}
-                      onChange={(key, value) =>
-                        handleChange("workExperience", key, value)
-                      }
-                    />
-                  )}
-                  {step === 6 && (
-                    <RsubsQualification
-                      data={formData.lbsProgrammeQualification}
-                      onChange={(key, value) =>
-                        handleChange("lbsProgrammeQualification", key, value)
-                      }
-                    />
-                  )}
-                  {step === 7 && (
-                    <Qualifications
-                      data={formData.qualifications}
-                      onChange={(index, key, value) => {
-                        const newQualifications = [...formData.qualifications];
-                        newQualifications[index][key] = value;
-                        setFormData({
-                          ...formData,
-                          qualifications: newQualifications,
-                        });
-                      }}
-                    />
-                  )}
-                  {step === 8 && (
-                    <ProgramFinancing
-                      data={formData.programmeFinancing}
-                      onChange={(key, value) =>
-                        handleChange("programmeFinancing", key, value)
-                      }
-                    />
-                  )}
-                  {step === 9 && (
-                    <Attachment
-                      data={formData.attachments}
-                      onChange={(key, file) =>
-                        handleFileChange("attachments", key, file)
-                      }
-                    />
-                  )}
-                </div>
-              )
-          )}
-
-          <div className="navigation-btn flex justify-between ">
-            {step > 1 && (
-              <div
-                onClick={PrevStep}
-                className="prev-btn bg-[#39447F] text-white p-3 border-none rounded ">
-                Previous
-              </div>
-            )}
-            {step < sections.length && (
-              <div
-                onClick={NextStep}
-                className="next-btn bg-[#39447F] text-white py-2 px-5 border-none rounded ">
-                Next
-              </div>
-            )}
-            {step === sections.length && (
-              <button
-                type="submit"
-                onClick={handleSubmit}
-                className="next-btn bg-[#39447F] text-white py-2 px-5 border-none rounded ">
-                <Link to={"/student"}>Submit</Link>
-              </button>
-            )}
+      <div className="container mx-auto px-4 py-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white shadow-xl rounded-2xl overflow-hidden">
+          <div className="bg-gradient-to-r from-[#39447F] to-[#5A6BAD] px-6 py-4">
+            <h1 className="text-2xl font-bold text-white text-center">
+              Full-Time MBA Admissions
+            </h1>
           </div>
-        </form>
+
+          <div className="flex">
+            {/* Sidebar Navigation */}
+            <div className="w-1/4 bg-gray-50 p-4 space-y-2">
+              {sections.map((section) => (
+                <button
+                  key={section.id}
+                  onClick={() => setStep(section.id)}
+                  className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-300 
+                    ${
+                      step === section.id
+                        ? "bg-[#39447F] text-white"
+                        : "text-gray-600 hover:bg-gray-200"
+                    }`}>
+                  <div className="flex items-center justify-between">
+                    <span>{section.label}</span>
+                    {step > section.id && (
+                      <CheckCircleIcon className="h-5 w-5 text-green-400" />
+                    )}
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            {/* Form Content */}
+            <div className="w-3/4 p-8">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={step}
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -50 }}
+                  transition={{ duration: 0.3 }}>
+                  {renderFormStep()}
+                </motion.div>
+              </AnimatePresence>
+
+              {/* Navigation Buttons */}
+              <div className="flex justify-between mt-8">
+                {step > 1 && (
+                  <button
+                    onClick={() => setStep(step - 1)}
+                    className="flex items-center bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300">
+                    <ChevronLeftIcon className="h-5 w-5 mr-2" />
+                    Previous
+                  </button>
+                )}
+
+                {step < sections.length ? (
+                  <button
+                    onClick={() => setStep(step + 1)}
+                    className="ml-auto flex items-center bg-[#39447F] text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                    Next
+                    <ChevronRightIcon className="h-5 w-5 ml-2" />
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleSubmit}
+                    className="ml-auto flex items-center bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+                    Submit Application
+                    <CheckCircleIcon className="h-5 w-5 ml-2" />
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </motion.div>
       </div>
     </div>
   );

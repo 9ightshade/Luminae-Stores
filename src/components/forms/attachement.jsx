@@ -1,76 +1,88 @@
-function Attachment({ data, onChange}) {
+import { DocumentPlusIcon } from "@heroicons/react/24/outline";
 
-    return (
+// eslint-disable-next-line react/prop-types
+function Attachment({ data, onChange }) {
+  const attachmentTypes = [
+    { 
+      id: "degreeCertificate", 
+      label: "Degree Certificate",
+      name: "degreeCertificate"
+    },
+    { 
+      id: "curriculumVitae", 
+      label: "Curriculum Vitae",
+      name: "curriculumVitae"
+    },
+    { 
+      id: "evidenceOfAbilityToPay", 
+      label: "Evidence of Ability To Pay",
+      name: "evidenceOfAbilityToPay"
+    },
+    { 
+      id: "oLevelResult", 
+      label: "O Level Result",
+      name: "oLevelResult"
+    },
+    { 
+      id: "nyscExemptionLetter", 
+      label: "NYSC Exemption Letter",
+      name: "nyscExemptionLetter"
+    }
+  ];
 
-        <div className=" flex flex-wrap text-gray-500 text-[1.1rem] outline-none gap-4 my-8 " >
-            <div className="degreeCertificate" >
-                <label htmlFor="degreeCertificate">
-                    Degree Certificate
-                </label>
-                <input type="file" onChange={(e) => {
-                    onChange('degreeCertificate', e.target.files[0]) 
-                }}
-                    // value={data.degreeCertificate}
-                    name="degreeCertificate" id="degreeCertificate" className="block w-full p-3"
-                    required
-                />
-            </div>
-
-
-            <div className="curriculumVitae" >
-                <label htmlFor="curriculumVitae">
-                    Curiculum Vitae
-                </label>
-                <input type="file" name="curriculumVitae" onChange={(e) => {
-                    onChange('curriculumVitae', e.target.files[0])
-                }}
-                    // value={data.curriculumVitae}
-                    required
-                    id="curriculumVitae" className="block w-full p-3" />
-            </div>
-
-            <div className="evidenceOfAbilityToPay" >
-                <label htmlFor="evidenceOfAbilityToPay">
-                    Evidence of Ability To Pay
-                </label>
-                <input type="file" onChange={(e) => {
-                    onChange('evidenceOfAbilityToPay', e.target.files[0]) 
-                }}
-                    // value={data.evidenceOfAbilityToPay}
-                    required
-                    name="evidenceOfAbilityToPay" id="evidenceOfAbilityToPay" className="block w-full p-3" />
-            </div>
-
-            <div className="oLevelResult" >
-                <label htmlFor="oLevelResult">
-                    O level Result
-                </label>
-                <input type="file" name="oLevelResult"
-                    required
-                    onChange={(e) => {
-                        onChange('oLevelResult', e.target.files[0])
-                    }}
-                    // value={data.oLevelResult}
-                    id="oLevelResult" className="block w-full p-3" />
-            </div>
-
-            {/* <p className="text-center text-blue-800 text-sm">File uploaded</p>
-            <div className="h-1.5 w-full bg-green-500 rounded-full"></div> */}
-
-            <div className="nyscExemptionLetter" >
-                <label htmlFor="nyscExemptionLetter">
-                    Nysc Exemption Letter
-                </label>
-                <input required type="file" name="nyscExemptionLetter" onChange={(e) => {
-                    onChange('nyscExemptionLetter', e.target.files[0])
-                }}
-                    // value={data.nyscExemptionLetter}
-                    id="nyscExemptionLetter" className="block w-full p-3" />
-            </div>
-
-        </div>
-
-    )
+  return (
+    <div className="bg-white shadow-md rounded-lg p-6">
+      <div className="flex items-center mb-6 border-b pb-4">
+        <DocumentPlusIcon className="h-8 w-8 text-[#39447F] mr-3" />
+        <h2 className="text-2xl font-bold text-[#39447F]">Document Attachments</h2>
+      </div>
+      
+      <div className="grid md:grid-cols-2 gap-6">
+        {attachmentTypes.map((attachment) => (
+          <div key={attachment.id}>
+            <label
+              htmlFor={attachment.id}
+              className="block text-sm font-medium text-gray-700 mb-2 flex items-center"
+            >
+              <DocumentPlusIcon className="h-5 w-5 mr-2 text-[#39447F]" />
+              {attachment.label}
+            </label>
+            <input
+              type="file"
+              id={attachment.id}
+              name={attachment.name}
+              onChange={(e) => onChange(attachment.name, e.target.files[0])}
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm 
+                file:mr-4 file:py-2 file:px-4 
+                file:rounded-md file:border-0
+                file:text-sm file:font-semibold
+                file:bg-[#39447F]/10 file:text-[#39447F]
+                hover:file:bg-[#39447F]/20
+                focus:ring-2 focus:ring-[#39447F]/50 focus:border-[#39447F]
+                transition-all duration-300"
+            />
+          </div>
+        ))}
+      </div>
+      
+      <div className="mt-4 text-sm text-gray-500 italic flex items-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5 mr-2 text-yellow-500"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fillRule="evenodd"
+            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+            clipRule="evenodd"
+          />
+        </svg>
+        Please upload all required documents carefully
+      </div>
+    </div>
+  );
 }
 
 export default Attachment;

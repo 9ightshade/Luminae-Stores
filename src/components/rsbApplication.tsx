@@ -112,9 +112,6 @@ function RsbApplication() {
         }
     }
 
-
-
-
     const handleClick = (sectionId: number) => {
         console.log(sectionId);
 

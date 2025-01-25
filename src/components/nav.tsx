@@ -2,7 +2,7 @@ import logo from "../assets/svg/logo.svg";
 import hamburger from "../assets/svg/hamburger-menu.svg";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useTokenClearAndRedirect } from "./helper/function";
+import { useTokenClearAndRedirect } from "../components/helper/function";
 
 // import dropdown from "../assets/svg/Vector.svg";
 

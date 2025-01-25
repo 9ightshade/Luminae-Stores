@@ -1,9 +1,9 @@
 import { useState } from "react";
 import adminData from "../admin";
-import StudentInfo from "./adminInfo/adminHomePanel";
-import AdminHomePanel from "./adminInfo/adminHomePanel";
-import AdminStudentPanel from "./adminInfo/adminStudentPanel";
-import AdminTranscriptPanel from "./adminInfo/adminTranscriptPanel";
+import StudentInfo from "./adminInfo/adminStudentPanel";
+import AdminHomePanel from "../components/adminInfo/adminHomePanel";
+import AdminStudentPanel from "../components/adminInfo/adminStudentPanel";
+import AdminTranscriptPanel from "../components/adminInfo/adminTranscriptPanel";
 
 function AdminDashboard() {
     const [step, setStep] = useState(1)

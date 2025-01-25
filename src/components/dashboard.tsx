@@ -1,10 +1,10 @@
 import Nav from "./nav";
 import dashboard from "../dashboard";
 import { useState } from "react";
-import Home from "./dashboardInfo/home";
-import ApplicationDashboard from "./dashboardInfo/application";
-import Payment from "./dashboardInfo/payment";
-import Transcript from "./dashboardInfo/transcript";
+import Home from "../components/dashboardInfo/home";
+import ApplicationDashboard from "../components/dashboardInfo/application";
+import Payment from "../components/dashboardInfo/payment";
+import Transcript from "../components/dashboardInfo/transcript";
 import { Link, useNavigate } from "react-router-dom";
 
 function StudentDashboard() {

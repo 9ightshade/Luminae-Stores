@@ -1,71 +1,54 @@
 import axios from "axios";
-
-
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 function Error() {
+  const userId = localStorage.getItem("_id");
 
-    const userId = localStorage.getItem('_id')
+  const startUrl = `https://portal.rsubs.org/api/application/${userId}/start`;
 
-    console.log(userId);
-    
-    const data = {
-        email: 'owaiowai30@gmail.com',
-        password:'Good123'
-    };
-    const fetchApplicationURL = "https://portal.rsubs.org/api/applications";
-
-
-    const startUrl = `https://portal.rsubs.org/api/application/:${userId}/start`;
-
-
-    const handleClick = async () => {
-        console.log('clicked');
-       try {
-           const response = await axios.get(startUrl)
-           
-           console.log(response.data);
-           
-       } catch (error) {
-        console.log(error);
-        
-       }
+  const handleClick = async () => {
+    console.log("clicked");
+    try {
+      const response = await axios.get(startUrl, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Assuming token-based authentication
+        },
+      });
+      console.log(response.data);
+    } catch (error) {
+      console.error(
+        "An error occurred:",
+        error.response?.data || error.message
+      );
     }
+  };
 
-    return (
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <motion.div
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="bg-white p-8 rounded-lg shadow-lg text-center">
+        <h1 className="text-4xl font-bold text-blue-700 mb-4">
+          Oops! Something went wrong.
+        </h1>
+        <p className="text-gray-600 mb-6">
+          We're sorry for the inconvenience. Please try again or contact support
+          if the issue persists.
+        </p>
 
-        <div>
-            <h1 className="text-center text-blue-700 text-[2rem] " onClick={() => {
-                handleClick()
-            }} >
-                Error page
-            </h1>
-
-        </div>
-
-
-    )
-
+        <Link to="/" className="block font-bold text-blue-700 mb-4 ">
+          Return to login
+        </Link>
+        <button
+          onClick={handleClick}
+          className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-200">
+          Retry
+        </button>
+      </motion.div>
+    </div>
+  );
 }
 
-
-
 export default Error;
-
-
-// const axios = require('axios');
-
-// const username = 'your_username';
-// const password = 'your_password';
-
-// const encodedCredentials = Buffer.from(`${username}:${password}`).toString('base64');
-
-// axios.get('https://api.example.com/protected-resource', {
-//     headers: {
-//         Authorization: `Basic ${encodedCredentials}`
-//     }
-// })
-//     .then(response => {
-//         console.log(response.data);
-//     })
-//     .catch(error => {
-//         console.error(error);
-//     });

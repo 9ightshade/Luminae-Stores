@@ -6,10 +6,10 @@ function Application() {
     return (
 
         <div>
-          
+
             <AuthProvider>
                 <Nav />
-                <RsbApplication/>
+                <RsbApplication />
             </AuthProvider>
         </div>
 

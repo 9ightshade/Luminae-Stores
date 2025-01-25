@@ -6,7 +6,7 @@ function Admin() {
     return (
         <div>
             <Nav />
-            <AdminDashboard/>
+            <AdminDashboard />
         </div>
     )
 

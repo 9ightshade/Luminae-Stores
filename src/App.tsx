@@ -1,13 +1,20 @@
-import Routes from './routes';
-import { AuthProvider } from './hooks/useAuth';
+import AppRouter from "./routes/appRoutes"
 
-import Home from './pages/Home';
-import AppRoutes from './appRoutes';
+
 function App() {
 
+
   return (
-    <AppRoutes />
+    <>
+      <AppRouter />
+    </>
   )
 }
 
 export default App
+
+{/**
+  ENDPOINT to send form application
+  api to logout
+  
+  */}

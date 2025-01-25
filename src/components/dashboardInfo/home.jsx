@@ -120,96 +120,117 @@ const nigeriaHolidaysAndEvents = [
 ];
 
 function Home() {
-  const [userData, setUserData] = useState(null);
-  const [randomEvents, setRandomEvents] = useState([]);
-  // Get user ID and token from localStorage
-  const userId = localStorage.getItem("_id");
-  const token = localStorage.getItem("token");
-  //   const email = localStorage.getItem('email');
-  //   console.log(email);
-
-  // API URL to fetch user data
-  const fetchUserURL = `https://portal.rsubs.org/api/users/${userId}`;
-
-  const fetchUserData = async () => {
-    try {
-      const fetchResponse = await axios.get(fetchUserURL, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setUserData(fetchResponse.data);
-      //   console.log(fetchResponse.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    fetchUserData();
-    // Shuffle and pick 4 random events
-    const shuffledEvents = [...nigeriaHolidaysAndEvents].sort(
-      () => 0.5 - Math.random()
+    const [userData, setUserData] = useState(null);
+    const [randomEvents, setRandomEvents] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+  
+    const userId = localStorage.getItem("_id");
+    const token = localStorage.getItem("token");
+    const fetchUserURL = `https://portal.rsubs.org/api/users/${userId}`;
+  
+    const fetchUserData = async () => {
+      try {
+        setIsLoading(true);
+        const fetchResponse = await axios.get(fetchUserURL, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setUserData(fetchResponse.data);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+  
+    useEffect(() => {
+      fetchUserData();
+      const shuffledEvents = [...nigeriaHolidaysAndEvents]
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 3);
+      setRandomEvents(shuffledEvents);
+    }, []);
+  
+    if (isLoading) return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-[#39447F]">Loading dashboard...</p>
+      </div>
     );
-    setRandomEvents(shuffledEvents.slice(0, 3));
-  }, []);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="flex justify-between p-3 text-gray-500 gap-4">
-      {/* Upcoming Events Section */}
+  
+    if (error) return (
+      <div className="text-red-500 text-center p-4">
+        Error loading dashboard: {error}
+      </div>
+    );
+  
+    return (
       <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="upcoming-class bg-white p-5 w-1/2">
-        <h2 className="font-bold text-lg">Upcoming Events</h2>
-
-        <div className="events-list rounded flex flex-col gap-2">
-          {randomEvents.map((event) => (
-            <motion.div
-              key={event.id}
-              className="event border-2 border-l-blue-400 bg-blue-100 p-2"
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.2 }}>
-              <h2 className="event-day font-bold">{event.name}</h2>
-              <p className="event-description">{event.description}</p>
-              <p className="justify-self-end font-semibold">{event.date}</p>
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
-
-      {/* Profile Details Section */}
-      <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="profile bg-white p-5 flex flex-col gap-3 w-1/2">
-        <h2 className="font-bold text-lg">Profile Details</h2>
-        <div className="flex flex-col items-center gap-2">
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="flex justify-between p-6 bg-gray-100 gap-6"
+      >
+        {/* Upcoming Events Section */}
+        <motion.div
+          initial={{ x: -50, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="bg-white p-6 rounded-lg shadow-md w-1/2"
+        >
+          <h2 className="text-2xl text-[#39447F] font-bold mb-4">
+            Upcoming Events
+          </h2>
+          <div className="space-y-4">
+            {randomEvents.map((event) => (
+              <motion.div
+                key={event.id}
+                whileHover={{ scale: 1.02 }}
+                className="border-l-4 border-blue-500 bg-blue-50 p-4 rounded-r-lg"
+              >
+                <h3 className="text-lg font-semibold text-blue-800">
+                  {event.name}
+                </h3>
+                <p className="text-gray-600 mb-2">{event.description}</p>
+                <p className="text-sm text-blue-600 font-medium">
+                  {event.date}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+  
+        {/* Profile Details Section */}
+        <motion.div
+          initial={{ x: 50, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="bg-white p-6 rounded-lg shadow-md w-1/2 flex flex-col items-center"
+        >
+          <h2 className="text-2xl text-[#39447F] font-bold mb-6">
+            Profile Details
+          </h2>
           <motion.div
-            className="profile-pic w-[50px] relative"
             whileHover={{ scale: 1.1 }}
-            transition={{ duration: 0.3 }}>
-            <div className="w-2 h-2 bg-green-400 absolute rounded-full left-10 top-2"></div>
+            className="relative mb-4"
+          >
+            <div className="absolute right-0 top-0 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
             <img
               src={profilePic}
               alt="Profile"
-              className="w-full rounded-full"
+              className="w-24 h-24 rounded-full object-cover border-4 border-[#39447F]"
             />
           </motion.div>
-          <p className="font-semibold">{userData ? userData.name : ""}</p>
-        </div>
-
-        <p className="email text-center">{userData ? userData.email : ""}</p>
-        <div className="about-me">
-          <p className="phone-number text-center">Contact info: 0802389911</p>
-        </div>
+          
+          <div className="text-center">
+            <h3 className="text-xl font-semibold text-gray-800">
+              {userData?.name || "User"}
+            </h3>
+            <p className="text-gray-600 mb-2">{userData?.email || "No email"}</p>
+            <p className="text-gray-500">Contact: {userData?.phone || "Not provided"}</p>
+          </div>
+        </motion.div>
       </motion.div>
-    </motion.div>
-  );
-}
-
-export default Home;
+    );
+  }
+  
+  export default Home;

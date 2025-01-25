@@ -2,7 +2,8 @@ import axios from "axios";
 import bgimage from "../assets/png/background_img.png";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Eye, EyeOff } from "lucide-react"; // Import icons
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"; // Import eye icons from react-icons
+import { motion } from "framer-motion";
 
 function SignUp() {
   const [formData, setFormData] = useState({
@@ -14,7 +15,7 @@ function SignUp() {
   const [errors, setErrors] = useState({});
   const [toast, setToast] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const URL = "https://portal.rsubs.org/api/users/signup";
@@ -78,24 +79,35 @@ function SignUp() {
   };
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
       className="min-h-screen flex items-center justify-center p-4 bg-cover bg-center"
       style={{
         backgroundImage: `url(${bgimage})`,
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
       }}>
-      <div className="w-full max-w-md bg-white/90 backdrop-blur-sm p-8 rounded-xl shadow-2xl">
+      <motion.div
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-md bg-white/90 backdrop-blur-sm p-8 rounded-xl shadow-2xl">
         <h3 className="text-center text-3xl md:text-4xl text-[#39447F] font-black mb-6">
           Create Account
         </h3>
 
         {toast && (
-          <div
+          <motion.div
+            initial={{ y: -20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -20, opacity: 0 }}
+            transition={{ duration: 0.3 }}
             className="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative mb-4"
             role="alert">
             <span className="block sm:inline">{toast}</span>
-          </div>
+          </motion.div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -149,7 +161,11 @@ function SignUp() {
             <div
               className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
               onClick={togglePasswordVisibility}>
-              {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              {showPassword ? (
+                <AiOutlineEyeInvisible className="w-5 h-5 text-gray-500" />
+              ) : (
+                <AiOutlineEye className="w-5 h-5 text-gray-500" />
+              )}
             </div>
             {errors.password && (
               <p className="text-red-500 text-sm mt-1">{errors.password}</p>
@@ -174,7 +190,11 @@ function SignUp() {
             <div
               className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
               onClick={togglePasswordVisibility}>
-              {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              {showPassword ? (
+                <AiOutlineEyeInvisible className="w-5 h-5 text-gray-500" />
+              ) : (
+                <AiOutlineEye className="w-5 h-5 text-gray-500" />
+              )}
             </div>
             {errors.confirmPassword && (
               <p className="text-red-500 text-sm mt-1">
@@ -204,8 +224,8 @@ function SignUp() {
             </Link>
           </p>
         </form>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
 

@@ -1,5 +1,5 @@
 import Nav from "./nav";
-import sections from "../sections";
+import sections from "../section";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Course from "./forms/course";
@@ -9,8 +9,8 @@ import Citizenship from "./forms/citizenship";
 import WorkExperience from "./forms/workExp";
 import RsubsQualification from "./forms/rsubsQualification";
 import Qualifications from "./forms/qaulifications";
-import ProgramFinancing from "./forms/programFinacing";
-import Attachment from "./forms/attachement";
+import ProgramFinancing from "./forms/programFinancing";
+import Attachment from "./forms/attachment";
 import axios from "axios";
 
 function RsbApplication() {
@@ -49,7 +49,7 @@ function RsbApplication() {
 
 
 
-    const handleChange = (section, key, value) => {
+    const handleChange = (section: string, key: any, value: any) => {
         setFormData((prev) => ({
             ...prev,
             [section]: {
@@ -59,7 +59,7 @@ function RsbApplication() {
         }));
     };
 
-    const handleFileChange = (section, key, file) => {
+    const handleFileChange = (section: string, key: any, file: any) => {
 
         setFormData((prev) => ({
             ...prev,
@@ -74,7 +74,7 @@ function RsbApplication() {
 
     // const testURL = ' https://httpbin.org/post';
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: { preventDefault: () => void; }) => {
         e.preventDefault()
         console.log(`submit form ...`);
         console.log('final form:', formData);
@@ -115,7 +115,7 @@ function RsbApplication() {
 
 
 
-    const handleClick = (sectionId) => {
+    const handleClick = (sectionId: number) => {
         console.log(sectionId);
 
         switch (sectionId) {
@@ -199,36 +199,36 @@ function RsbApplication() {
                                     </h2>
                                     {step === 1 && <Course
                                         data={formData.course}
-                                        onChange={(key, value) => handleChange('course', key, value)}
+                                        onChange={(key: any, value: any) => handleChange('course', key, value)}
                                     />}
                                     {step === 2 && <PersonalInfo
                                         data={formData.personalInformation}
-                                        onChange={(key, value) => handleChange('personalInformation', key, value)}
+                                        onChange={(key: any, value: any) => handleChange('personalInformation', key, value)}
                                     />}
                                     {step === 3 && <EmergencyContact
-                                        data={formData.emergencyContact} onChange={(key, value) => handleChange('emergencyContact', key, value)}
+                                        data={formData.emergencyContact} onChange={(key: any, value: any) => handleChange('emergencyContact', key, value)}
                                     />}
                                     {step === 4 && <Citizenship
-                                        data={formData.citizenship} onChange={(key, value) => handleChange('citizenship', key, value)}
+                                        data={formData.citizenship} onChange={(key: any, value: any) => handleChange('citizenship', key, value)}
                                     />}
                                     {step === 5 && <WorkExperience
-                                        data={formData.workExperience} onChange={(key, value) => handleChange('workExperience', key, value)}
+                                        data={formData.workExperience} onChange={(key: any, value: any) => handleChange('workExperience', key, value)}
                                     />}
                                     {step === 6 && <RsubsQualification
-                                        data={formData.lbsProgrammeQualification} onChange={(key, value) => handleChange('lbsProgrammeQualification', key, value)}
+                                        data={formData.lbsProgrammeQualification} onChange={(key: any, value: any) => handleChange('lbsProgrammeQualification', key, value)}
                                     />}
                                     {step === 7 && <Qualifications
-                                        data={formData.qualifications} onChange={(index, key, value) => {
+                                        data={formData.qualifications} onChange={(index: string | number, key: string | number, value: any) => {
                                             const newQualifications = [...formData.qualifications];
                                             newQualifications[index][key] = value;
                                             setFormData({ ...formData, qualifications: newQualifications });
                                         }}
                                     />}
                                     {step === 8 && <ProgramFinancing
-                                        data={formData.programmeFinancing} onChange={(key, value) => handleChange('programmeFinancing', key, value)}
+                                        data={formData.programmeFinancing} onChange={(key: any, value: any) => handleChange('programmeFinancing', key, value)}
                                     />}
                                     {step === 9 && <Attachment
-                                        data={formData.attachments} onChange={(key, file) => handleFileChange('attachments', key, file)}
+                                        data={formData.attachments} onChange={(key: any, file: any) => handleFileChange('attachments', key, file)}
                                     />}
                                 </div>
 

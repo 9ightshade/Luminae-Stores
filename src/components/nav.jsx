@@ -25,7 +25,7 @@ function Nav() {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    setIsLoggedIn(false);
+    // setIsLoggedIn(false);
   };
 
   return (

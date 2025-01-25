@@ -7,16 +7,16 @@ import {
 } from 'react-router-dom';
 
 // Page Components
-import HomePage from './pages/HomePage';
-import ProductListPage from './pages/ProductListPage';
-import ProductDetailPage from './pages/ProductDetailPage';
-import CartPage from './pages/CartPage';
-import CheckoutPage from './pages/CheckoutPage';
-import OrderConfirmationPage from './pages/OrderConfirmationPage';
-import AccountPage from './pages/AccountPage';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import NotFoundPage from './pages/NotFoundPage';
+import HomePage from './pages/Home';
+import ProductDetails from './pages/ProductDetails';
+import ProductList from './pages/ProductList';
+import Cart from './pages/Cart';
+import Checkout from './pages/Checkout';
+import OrderConfirmation from './pages/OrderConfirmation';
+import Account from './pages/Account';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import NotFound from './pages/NotFound';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -32,19 +32,19 @@ const AppRoutes = () => {
     <Router>
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<HomePage />} />
-        <Route path="/products" element={<ProductListPage />} />
-        <Route path="/products/:id" element={<ProductDetailPage />} />
-        <Route path="/cart" element={<CartPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/products" element={<ProductList />} />
+        <Route path="/products/:id" element={<ProductDetail />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
         {/* Protected Routes */}
         <Route 
           path="/checkout" 
           element={
             <ProtectedRoute>
-              <CheckoutPage />
+              <Checkout />
             </ProtectedRoute>
           } 
         />
@@ -52,7 +52,7 @@ const AppRoutes = () => {
           path="/order-confirmation/:orderId" 
           element={
             <ProtectedRoute>
-              <OrderConfirmationPage />
+              <OrderConfirmation />
             </ProtectedRoute>
           } 
         />
@@ -60,13 +60,13 @@ const AppRoutes = () => {
           path="/account" 
           element={
             <ProtectedRoute>
-              <AccountPage />
+              <Account />
             </ProtectedRoute>
           } 
         />
 
         {/* 404 Route */}
-        <Route path="*" element={<NotFoundPage />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );

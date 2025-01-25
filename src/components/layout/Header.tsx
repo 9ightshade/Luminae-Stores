@@ -8,6 +8,7 @@ import signin from "../../assets/Signin.svg"
 import favorides from "../../assets/Favorides.svg"
 import card from "../../assets/Card.svg"
 import memcosmetics from "../../assets/Men cosmetic.svg"
+import { Link } from "react-router-dom"
 export const Header = () => {
     return (
         <div className="font-Lato " >
@@ -66,14 +67,14 @@ export const Header = () => {
                     </div>
                 </div>
 
-                <div className="text-white gap-2 flex items-center" >
+                <Link to="/login" className="text-white gap-2 flex items-center" >
                     <div>
                         <div><img src={signin} alt="#" /></div>
                     </div>
                     <p>
                         Sign in
                     </p>
-                </div>
+                </Link>
 
                 <div className="text-white gap-2 flex items-center">
                     <div>

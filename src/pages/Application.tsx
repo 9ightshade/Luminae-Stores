@@ -1,23 +1,23 @@
 import Nav from "../components/nav";
-import SignIn from "../components/signIn";
+import RsbApplication from "../components/rsbApplication";
 import { AuthProvider } from "../context/userAuth";
-
-function Login() {
+function Application() {
 
     return (
 
-        <div className="login-page  " >
-            
+        <div>
+          
             <AuthProvider>
                 <Nav />
-                <SignIn />
+                <RsbApplication/>
             </AuthProvider>
-
         </div>
 
 
     )
 
+
 }
 
-export default Login;
+
+export default Application;

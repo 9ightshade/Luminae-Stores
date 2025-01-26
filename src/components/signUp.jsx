@@ -47,28 +47,26 @@ function SignUp() {
     }));
   };
 
-  const handleSubmit = async (e, email, password, name) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!validateForm()) return;
 
     setIsLoading(true);
-
     try {
-      const ID = "unique()";
-      const response = account.create(ID, email, password, name);
-      setToast(response.data.message);
+      const response = await account.create(
+        "unique()",
+        formData.email,
+        formData.password,
+        formData.fullname
+      );
+      setToast("Account created successfully");
       setTimeout(() => navigate("/"), 2000);
     } catch (error) {
-      console.log(error);
-
-      const errorMessage = error.response?.data?.message || "Signup failed";
-      setToast(errorMessage);
+      setToast(error.message || "Signup failed");
     } finally {
       setIsLoading(false);
     }
   };
-
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };

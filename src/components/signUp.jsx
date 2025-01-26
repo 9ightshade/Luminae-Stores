@@ -60,6 +60,8 @@ function SignUp() {
       setToast(response.data.message);
       setTimeout(() => navigate("/"), 2000);
     } catch (error) {
+      console.log(error);
+
       const errorMessage = error.response?.data?.message || "Signup failed";
       setToast(errorMessage);
     } finally {

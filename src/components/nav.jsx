@@ -1,31 +1,43 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Bars3Icon,
   XMarkIcon,
   UserPlusIcon,
+  ArrowRightStartOnRectangleIcon,
 } from "@heroicons/react/24/outline";
 import logo from "../assets/svg/logo.svg";
-import { useTokenClearAndRedirect } from "./helper/function";
+import { account } from "../lib/appwrite";
 
 function Nav() {
   const [isVisible, setIsVisible] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
 
-  const token = localStorage.getItem("token");
+  // function sessionActive() {
+  //   if (account.get()) {
+  //     setIsLoggedIn(account.get());
+  //     console.log("log in session active...");
+  //   } else {
+  //     console.log("no active sessions");
+  //   }
+  // }
 
-  useEffect(() => {
-    setIsLoggedIn(!!token);
-  }, [token]);
+  // useEffect(() => {
+  //   sessionActive();
+  // }, []);
 
   const toggleSideNav = () => {
     setIsVisible((prev) => !prev);
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    // setIsLoggedIn(false);
+    if (isLoggedIn) {
+      account.deleteSession("current");
+      setIsLoggedIn(false);
+      navigate("/");
+    }
   };
 
   return (
@@ -71,7 +83,7 @@ function Nav() {
             <button
               onClick={handleLogout}
               className="flex items-center bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200">
-              {/* <ArrowRightOnRectangleIcon className="w-5 h-5 mr-2" /> */}
+              <ArrowRightStartOnRectangleIcon className="w-5 h-5 mr-2" />
               <Link to="/">Log Out</Link>
             </button>
           ) : (
@@ -137,7 +149,7 @@ function Nav() {
                     toggleSideNav();
                   }}
                   className="flex items-center bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200">
-                  {/* <ArrowRightOnRectangleIcon className="w-5 h-5 mr-2" /> */}
+                  <ArrowRightStartOnRectangleIcon className="w-5 h-5 mr-2" />
                   Log Out
                 </button>
               ) : (

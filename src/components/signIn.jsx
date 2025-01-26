@@ -1,55 +1,50 @@
-import axios from "axios";
 import bgimage from "../assets/png/background_img.png";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
-import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"; // Eye icons
-import { motion } from "framer-motion"; // Animations
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { motion } from "framer-motion";
+import { account } from "../lib/appwrite";
 
 function SignIn() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [toast, setToast] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // Password visibility toggle
-
-  const loginURL = "https://portal.rsubs.org/api/users/login";
-  const expirationTimeInHours = 2;
-  const expirationTime = Date.now() + expirationTimeInHours * 60 * 60 * 1000;
-
-  const decodeToken = (token) => {
-    const response = jwtDecode(token);
-
-    localStorage.setItem("_id", response.userId);
-    localStorage.setItem("role", response.role);
-
-    const role = response.role;
-    role === "student" && navigate("/student");
-    role === "admin" && navigate("/admin");
-  };
+  const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (email && password) {
-      localStorage.setItem("email", email);
-      localStorage.setItem("tokenExpirationTime", expirationTime);
+    setError("");
 
-      setIsLoading(true);
+    // Basic validation
+    if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+      setError("Please enter a valid email address");
+      return;
+    }
 
-      try {
-        const response = await axios.post(loginURL, { email, password });
-        const token = response.data.token;
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters long");
+      return;
+    }
 
-        localStorage.setItem("token", token);
-        decodeToken(token);
-      } catch (error) {
-        const errorMessage =
-          error.response?.data?.message || "Login failed. Please try again.";
-        setToast(errorMessage);
-      } finally {
-        setIsLoading(false);
-      }
+    setIsLoading(true);
+    try {
+      const response = await account.createEmailPasswordSession(
+        email,
+        password
+      );
+      console.log("Login successful", response);
+      navigate("/student");
+    } catch (error) {
+      console.error("Login error", error);
+      setError(
+        error.message ||
+          error.response?.data?.message ||
+          "Login failed. Please check your credentials."
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -77,7 +72,7 @@ function SignIn() {
           Log in
         </h3>
 
-        {toast && (
+        {error && (
           <motion.div
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -85,40 +80,42 @@ function SignIn() {
             transition={{ duration: 0.3 }}
             className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
             role="alert">
-            <span>{toast}</span>
+            <span>{error}</span>
           </motion.div>
         )}
 
-        <form className="space-y-4" onSubmit={handleSubmit}>
+        <form
+          className="space-y-4"
+          onSubmit={handleSubmit}
+          aria-label="Login Form">
           <div>
-            {/* <label htmlFor="email" className="block mb-1 text-gray-700">
-              Email
-            </label> */}
             <input
               id="email"
               type="email"
               required
               placeholder="Email*"
+              aria-label="Email Address"
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
           <div className="relative">
-            {/* <label htmlFor="password" className="block mb-1 text-gray-700">
-              Password
-            </label> */}
             <input
               id="password"
               type={showPassword ? "text" : "password"}
               required
               placeholder="Password"
+              aria-label="Password"
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
             <div
               className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
-              onClick={togglePasswordVisibility}>
+              onClick={togglePasswordVisibility}
+              aria-label="Toggle Password Visibility">
               {showPassword ? (
                 <AiOutlineEyeInvisible className="w-5 h-5 text-gray-500" />
               ) : (
@@ -142,7 +139,7 @@ function SignIn() {
           </motion.button>
 
           <p className="text-center text-sm text-gray-600 mt-4">
-            Don’t have an account?{" "}
+            {`Don't have an account?`}{" "}
             <Link
               to="/register"
               className="text-[#39447F] hover:underline font-semibold">

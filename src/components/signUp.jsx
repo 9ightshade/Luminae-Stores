@@ -1,9 +1,9 @@
-import axios from "axios";
 import bgimage from "../assets/png/background_img.png";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"; // Import eye icons from react-icons
 import { motion } from "framer-motion";
+import { account } from "../lib/appwrite";
 
 function SignUp() {
   const [formData, setFormData] = useState({
@@ -12,13 +12,12 @@ function SignUp() {
     password: "",
     confirmPassword: "",
   });
+
   const [errors, setErrors] = useState({});
   const [toast, setToast] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-
-  const URL = "https://portal.rsubs.org/api/users/signup";
 
   const validateForm = () => {
     const newErrors = {};
@@ -48,22 +47,16 @@ function SignUp() {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e, email, password, name) => {
     e.preventDefault();
 
     if (!validateForm()) return;
 
     setIsLoading(true);
-    const data = {
-      name: formData.fullname,
-      email: formData.email,
-      password: formData.password,
-      confirmPassword: formData.confirmPassword,
-      role: "student",
-    };
 
     try {
-      const response = await axios.post(URL, data);
+      const ID = "unique()";
+      const response = account.create(ID, email, password, name);
       setToast(response.data.message);
       setTimeout(() => navigate("/"), 2000);
     } catch (error) {
@@ -110,7 +103,16 @@ function SignUp() {
           </motion.div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form
+          onSubmit={(e) => {
+            handleSubmit(
+              e,
+              formData.email,
+              formData.password,
+              formData.fullname
+            );
+          }}
+          className="space-y-4">
           <div>
             <input
               className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 

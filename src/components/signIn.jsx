@@ -30,19 +30,41 @@ function SignIn() {
 
     setIsLoading(true);
     try {
-      const response = await account.createEmailPasswordSession(
-        email,
-        password
-      );
+      // First, delete any existing sessions
+      try {
+        await account.deleteSessions();
+      } catch (sessionError) {
+        console.warn("Error deleting existing sessions", sessionError);
+      }
+
+      // Then create a new session
+      const response = await account.createEmailPasswordSession(email, password);
       console.log("Login successful", response);
       navigate("/student");
     } catch (error) {
       console.error("Login error", error);
-      setError(
-        error.message ||
-          error.response?.data?.message ||
+      
+      // More specific error handling
+      if (error.type === 'user_unauthorized') {
+        setError("Invalid email or password");
+      } else if (error.code === 'user_session_already_exists') {
+        try {
+          // Force create a new session by deleting existing ones
+          await account.deleteSessions();
+          const response = await account.createEmailPasswordSession(email, password);
+
+          
+          navigate("/student");
+        } catch (retryError) {
+          setError("Unable to log in. Please try again later.");
+        }
+      } else {
+        setError(
+          error.message || 
+          error.response?.data?.message || 
           "Login failed. Please check your credentials."
-      );
+        );
+      }
     } finally {
       setIsLoading(false);
     }
@@ -62,16 +84,18 @@ function SignIn() {
         backgroundImage: `url(${bgimage})`,
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
-      }}>
+      }}
+    >
       <motion.div
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="bg-[#F3F1F1] p-10 shadow-md shadow-gray-500 rounded-xl w-full max-w-md">
+        className="bg-[#F3F1F1] p-10 shadow-md shadow-gray-500 rounded-xl w-full max-w-md"
+      >
         <h3 className="text-center text-3xl text-[#39447F] font-black mb-6">
           Log in
         </h3>
-
+        
         {error && (
           <motion.div
             initial={{ y: -20, opacity: 0 }}
@@ -79,15 +103,17 @@ function SignIn() {
             exit={{ y: -20, opacity: 0 }}
             transition={{ duration: 0.3 }}
             className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
-            role="alert">
+            role="alert"
+          >
             <span>{error}</span>
           </motion.div>
         )}
-
+        
         <form
           className="space-y-4"
           onSubmit={handleSubmit}
-          aria-label="Login Form">
+          aria-label="Login Form"
+        >
           <div>
             <input
               id="email"
@@ -100,7 +126,7 @@ function SignIn() {
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-
+          
           <div className="relative">
             <input
               id="password"
@@ -115,7 +141,8 @@ function SignIn() {
             <div
               className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
               onClick={togglePasswordVisibility}
-              aria-label="Toggle Password Visibility">
+              aria-label="Toggle Password Visibility"
+            >
               {showPassword ? (
                 <AiOutlineEyeInvisible className="w-5 h-5 text-gray-500" />
               ) : (
@@ -123,7 +150,7 @@ function SignIn() {
               )}
             </div>
           </div>
-
+          
           <motion.button
             type="submit"
             initial={{ y: 20, opacity: 0 }}
@@ -134,23 +161,26 @@ function SignIn() {
                 ? "bg-gray-500 cursor-not-allowed"
                 : "bg-[#39447F] hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
             }`}
-            disabled={isLoading}>
+            disabled={isLoading}
+          >
             {isLoading ? "Processing..." : "Submit"}
           </motion.button>
-
+          
           <p className="text-center text-sm text-gray-600 mt-4">
-            {`Don't have an account?`}{" "}
+            Don't have an account?{" "}
             <Link
               to="/register"
-              className="text-[#39447F] hover:underline font-semibold">
+              className="text-[#39447F] hover:underline font-semibold"
+            >
               Create profile
             </Link>
           </p>
-
+          
           <p className="text-center text-sm text-gray-600 mt-2">
             <Link
               to="/reset_password"
-              className="text-[#39447F] hover:underline font-semibold">
+              className="text-[#39447F] hover:underline font-semibold"
+            >
               Forgot Your Password?
             </Link>
           </p>

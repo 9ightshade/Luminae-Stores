@@ -1,4 +1,4 @@
-import { Client, Account } from 'appwrite';
+import { Client, Account, Databases } from 'appwrite';
 
 export const client = new Client();
 
@@ -7,20 +7,22 @@ client
     .setProject(import.meta.env.VITE_APPWRITE_PROJECT_ID); // Replace with your project ID
 
 export const account = new Account(client);
+export const databases = new Databases(client);
 export { ID } from 'appwrite';
 
 
-export function createUser(navigate, e, email, password, name) {
 
-    e.preventDefault();
+// export function createUser(navigate, e, email, password, name) {
 
-    const ID = "unique()";
-    const user = account.create(ID, email, password, name);
+//     e.preventDefault();
 
-    user.then(function (response) {
-        console.log(response); // Success
-        navigate('/');
-    }, function (error) {
-        console.log(error); // Failure
-    });
-}
+//     const ID = "unique()";
+//     const user = account.create(ID, email, password, name);
+
+//     user.then(function (response) {
+//         console.log(response); // Success
+//         navigate('/');
+//     }, function (error) {
+//         console.log(error); // Failure
+//     });
+// }

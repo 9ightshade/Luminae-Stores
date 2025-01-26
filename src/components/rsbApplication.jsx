@@ -6,6 +6,7 @@ import {
   ChevronRightIcon,
   ChevronLeftIcon,
 } from "@heroicons/react/24/outline";
+import { Client, Databases, Query } from "appwrite";
 
 import Nav from "./nav";
 import sections from "../sections";
@@ -19,8 +20,24 @@ import Qualifications from "./forms/qaulifications";
 import ProgramFinancing from "./forms/programFinacing";
 import Attachment from "./forms/attachement";
 import axios from "axios";
+import { databases } from "../lib/appwrite";
 
 function RsbApplication() {
+  async function fetchDatabase() {
+    try {
+      const response = databases.listDocuments(
+        "67963f8b0024375ff837",
+        "67963fa30024b8f4f411",
+        [Query.equal("courseTitle", "Accounting")]
+      );
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  fetchDatabase();
+
   const [step, setStep] = useState(1);
   const email = localStorage.getItem("email");
   const navigate = useNavigate();

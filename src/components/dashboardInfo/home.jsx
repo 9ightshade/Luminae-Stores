@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion"; // Animations
 import profilePic from "../../assets/jpeg/testPassport.jpg";
+import { account } from "../../lib/appwrite";
 
 const nigeriaHolidaysAndEvents = [
   {
@@ -125,17 +126,13 @@ function Home() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
   
-    const userId = localStorage.getItem("_id");
-    const token = localStorage.getItem("token");
-    const fetchUserURL = `https://portal.rsubs.org/api/users/${userId}`;
   
     const fetchUserData = async () => {
       try {
         setIsLoading(true);
-        const fetchResponse = await axios.get(fetchUserURL, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setUserData(fetchResponse.data);
+       
+        setUserData(await account.get());
+        
       } catch (error) {
         setError(error.message);
       } finally {
